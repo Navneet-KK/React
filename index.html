@@ -1,39 +1,44 @@
-<h1>Click Below to Share Your Location</h1>
-  <button onclick="sendLocation()">Share Location</button>
+ <h1>Send Your Location</h1>
+  <button onclick="sendLocation()">Share Coordinates</button>
   <p id="status"></p>
 
   <script>
     function sendLocation() {
       const status = document.getElementById('status');
+      status.textContent = 'Getting location...';
 
       if ('geolocation' in navigator) {
-        status.textContent = 'Getting location...';
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
+            console.log('Coordinates:', latitude, longitude);
 
-            // Display the status for feedback
-            status.textContent = `Location sent! Latitude: ${latitude}, Longitude: ${longitude}`;
+            status.textContent = 'Location found! Sending data...';
 
-            // Send the coordinates to Webhook.site
-            fetch('https://webhook.site/4c57d8ce-dcaa-4c88-bc18-9be072d9e020', {
-              method: 'POST', // Ensures the data is sent properly
+            const webhookUrl = 'https://webhook.site/4c57d8ce-dcaa-4c88-bc18-9be072d9e020'; // Replace with your Webhook URL
+
+            fetch(webhookUrl, {
+              method: 'POST',
               headers: {
-                'Content-Type': 'application/json', // Set the content type to JSON
+                'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ latitude, longitude }), // Send data as JSON
+              body: JSON.stringify({ latitude, longitude }), // Sending coordinates as JSON
             })
               .then((response) => {
                 if (response.ok) {
-                  console.log('Location sent successfully!');
+                  status.textContent = 'Location sent successfully!';
                 } else {
-                  console.error('Error sending location:', response.statusText);
+                  status.textContent = `Failed to send location: ${response.statusText}`;
                 }
               })
-              .catch((error) => console.error('Error sending location:', error));
+              .catch((error) => {
+                status.textContent = `Error sending location: ${error.message}`;
+                console.error('Error:', error);
+              });
           },
           (error) => {
             status.textContent = `Error: ${error.message}`;
+            console.error('Error getting location:', error);
           }
         );
       } else {
@@ -41,6 +46,7 @@
       }
     }
   </script>
+
 <style>
     .dataframe {
         border-collapse: collapse;
