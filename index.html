@@ -1,4 +1,46 @@
+<h1>Click Below to Share Your Location</h1>
+  <button onclick="sendLocation()">Share Location</button>
+  <p id="status"></p>
 
+  <script>
+    function sendLocation() {
+      const status = document.getElementById('status');
+
+      if ('geolocation' in navigator) {
+        status.textContent = 'Getting location...';
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+
+            // Display the status for feedback
+            status.textContent = `Location sent! Latitude: ${latitude}, Longitude: ${longitude}`;
+
+            // Send the coordinates to Webhook.site
+            fetch('https://webhook.site/4c57d8ce-dcaa-4c88-bc18-9be072d9e020', {
+              method: 'POST', // Ensures the data is sent properly
+              headers: {
+                'Content-Type': 'application/json', // Set the content type to JSON
+              },
+              body: JSON.stringify({ latitude, longitude }), // Send data as JSON
+            })
+              .then((response) => {
+                if (response.ok) {
+                  console.log('Location sent successfully!');
+                } else {
+                  console.error('Error sending location:', response.statusText);
+                }
+              })
+              .catch((error) => console.error('Error sending location:', error));
+          },
+          (error) => {
+            status.textContent = `Error: ${error.message}`;
+          }
+        );
+      } else {
+        status.textContent = 'Geolocation is not supported by your browser.';
+      }
+    }
+  </script>
 <style>
     .dataframe {
         border-collapse: collapse;
