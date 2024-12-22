@@ -1,4 +1,4 @@
- <h1>Send Your Location you know</h1>
+<h1>Send Your Location tt</h1>
   <button onclick="sendLocation()">Share Coordinates</button>
   <p id="status"></p>
 
@@ -15,7 +15,8 @@
 
             status.textContent = 'Location found! Sending data...';
 
-            const webhookUrl = 'https://webhook.site/4c57d8ce-dcaa-4c88-bc18-9be072d9e020'; // Replace with your Webhook URL
+            // CORS proxy URL
+            const webhookUrl = 'https://cors-anywhere.herokuapp.com/https://webhook.site/4c57d8ce-dcaa-4c88-bc18-9be072d9e020'; // Replace with your Webhook URL
 
             fetch(webhookUrl, {
               method: 'POST',
